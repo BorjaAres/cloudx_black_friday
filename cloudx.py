@@ -13,6 +13,7 @@ def main():
         elif Client.username.lower() == 'sign up':
             Client.sign_up()
         else:
+            # Check if the entered username exists
             Client.check_username_existence(Client.username.lower())
             break
 
@@ -28,16 +29,21 @@ def main():
                        f'{italic_bold_open}Checkout{italic_bold_close}: ')
 
         if action.title() in cloud_x_products:
+            # Ask user how many of the chosen product to add
             number_of_items = input(
                 f'How many {italic_bold_open}{action}{italic_bold_close} would you like to add to the Cart?: ')
+            # Add the chosen product to the cart
             users_dict[Client.username].cart.add_product(action.title(), int(number_of_items))
         elif action.lower() == 'remove':
+            # Ask user which product to remove and how many
             item = input(
                 f'What {italic_bold_open}Product{italic_bold_close} would you like to remove?: ')
             number_of_items = input(
                 f'How many {italic_bold_open}{item}{italic_bold_close} would you like to remove from the Cart?: ')
+            # Remove the chosen product from the cart
             users_dict[Client.username].cart.remove_product(item, int(number_of_items))
         elif action.lower() == 'checkout':
+            # Proceed to checkout and finalize the purchase
             users_dict[Client.username].cart.checkout()
             break
 

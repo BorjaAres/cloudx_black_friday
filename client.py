@@ -37,8 +37,9 @@ class Client:
 
         cls.add_user_to_dict()
 
+    # Adding the new user to the dict
     @classmethod
-    def add_user_to_dict(cls):    # Create the new_user instance after obtaining the username
+    def add_user_to_dict(cls):
         new_user = Client(cls.username)
         users_dict[cls.username] = new_user
 
@@ -71,11 +72,12 @@ class Client:
                              f"\nPlease introduce a valid "
                              f"{italic_bold_open}Username{italic_bold_close} or "
                              f"{italic_bold_open}Sign Up{italic_bold_close}: ")
+                cls.username = user
                 if user.lower() == 'sign up':
                     cls.sign_up()
                     return cls.username
 
-    # Method to browse available products
+    # Method to browse available products and display them in a table
     @classmethod
     def browse(cls):
         column1 = list(cloud_x_products.items())[:len(cloud_x_products) // 2]
@@ -134,23 +136,38 @@ class Cart:
             cloud_x_products[product][1] += self.cart_dict[product]
             self.cart_dict[product] = 0
 
-    # Method to calculate and display the total after checkout
+    # Check if the input of the cart is valid
+    def check_valid_input(self):
+        if isinstance(self.total, (int, float)) and isinstance(self.number_of_items, int):
+            if self.total > 0 and self.number_of_items > 0:
+                return True
+            else:
+                print('Price and quantity should be above zero.')
+        else:
+            print('Invalid data types for total or number of items.')
+        return False
+
+    # Methods to calculate and display the total after checkout
     def checkout(self):
+        self.calculate_number_of_items()
+
         for product, quantity in self.cart_dict.items():
             self.total += self.cart_dict[product] * cloud_x_products[product][0]
-            print("Total before discounts:", self.total)
-
-        self.calculate_number_of_items()
-        self.apply_discount()
+            if self.check_valid_input():
+                print(f'\nTotal before discount: ${self.total}')
+                self.apply_discount()
 
     def calculate_number_of_items(self):
         self.number_of_items = sum(self.cart_dict.values())
         return self.number_of_items
 
+    # Method to apply the discount if conditions are met and input is valid
     def apply_discount(self):
         if self.total >= 200 and self.number_of_items >= 5:
             self.total -= self.discount
-            print("Total after discounts:", self.total)
+            print(f'\nTotal after discount: ${self.total}')
+        else:
+            print('\nBuy 5 or more products for $200 or more to get a $50 Discount!')
 
         return self.total
 
@@ -168,5 +185,4 @@ users_dict = {
     'joshua': user_joshua,
     'sartaz': user_sartaz,
     'borja': user_borja,
-
 }

@@ -1,3 +1,4 @@
+# Product: [Price, Stock]
 cloud_x_products = {
     'Basketball': [25.9, 9],
     'Tennis Racket': [50, 8],
@@ -13,5 +14,6 @@ cloud_x_products = {
     'Sport Shorts': [30.9, 5]
 }
 
-italic_bold_open = '\033[1;3m'
-italic_bold_close = '\033[0m'
+# ANSI escape sequences for formatting text as bold and italic
+italic_bold_open = '\033[1;3m'                # Open tag for bold and italic
+italic_bold_close = '\033[0m'                # Close tag for bold and italic
