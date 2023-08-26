@@ -1,8 +1,7 @@
 from tabulate import tabulate
-from cart import Cart
-from cloudx import *
+from products import cloud_x_products, italic_bold_open, italic_bold_close
 
-# Client class definition
+
 class Client:
     username = ''  # Store the current username
     signed_in = False  # To track if a user is signed in or not
@@ -36,7 +35,12 @@ class Client:
         cls.check_username_availability(cls.username.lower())
         cls.signed_in = True
 
-        return cls.username
+        cls.add_user_to_dict()
+
+    @classmethod
+    def add_user_to_dict(cls):    # Create the new_user instance after obtaining the username
+        new_user = Client(cls.username)
+        users_dict[cls.username] = new_user
 
     # Method to check if a username is available during sign up
     @classmethod
@@ -95,3 +99,74 @@ class Client:
                 f'Introduce your {italic_bold_open}Username{italic_bold_close}'
                 f' or {italic_bold_open}Sign up{italic_bold_close} to discover them: \n')
 
+
+# Cart class definition
+class Cart:
+    discount = 50
+
+    def __init__(self):
+        self.cart_dict = {}
+        self.total = 0
+        self.number_of_items = 0
+
+    # Method to add a product to the cart
+    def add_product(self, product, quantity):
+
+        if cloud_x_products[product][1] >= quantity:
+            self.cart_dict[product] = self.cart_dict.setdefault(product, 0) + quantity
+            cloud_x_products[product][1] -= quantity
+            print(self.cart_dict)
+        else:
+            self.cart_dict[product] = self.cart_dict.setdefault(product, 0) + cloud_x_products[product][1]
+            print(f'\nApologies, we dont have enough {italic_bold_open}{product}{italic_bold_close}, '
+                  f'{italic_bold_open}{cloud_x_products[product][1]}{italic_bold_close} added to your cart\n')
+            cloud_x_products[product][1] = 0
+            print(self.cart_dict)
+
+    # Method to remove a product from the cart
+    def remove_product(self, product, quantity):
+        if product in self.cart_dict and self.cart_dict[product] >= quantity:
+            self.cart_dict[product] -= quantity
+            cloud_x_products[product][1] += quantity
+        else:
+            print(f'There are not enough {italic_bold_open}{product}{italic_bold_close} in your Cart'
+                  f'{self.cart_dict[product][0]} {italic_bold_open}{product}{italic_bold_close} removed')
+            cloud_x_products[product][1] += self.cart_dict[product]
+            self.cart_dict[product] = 0
+
+    # Method to calculate and display the total after checkout
+    def checkout(self):
+        for product, quantity in self.cart_dict.items():
+            self.total += self.cart_dict[product] * cloud_x_products[product][0]
+            print("Total before discounts:", self.total)
+
+        self.calculate_number_of_items()
+        self.apply_discount()
+
+    def calculate_number_of_items(self):
+        self.number_of_items = sum(self.cart_dict.values())
+        return self.number_of_items
+
+    def apply_discount(self):
+        if self.total >= 200 and self.number_of_items >= 5:
+            self.total -= self.discount
+            print("Total after discounts:", self.total)
+
+        return self.total
+
+
+# Creating user instances
+user_asra = Client('Asra')
+user_joshua = Client('Joshua')
+user_sartaz = Client('Sartaz')
+user_borja = Client('Borja')
+
+
+# Dictionary to store user instances
+users_dict = {
+    'asra': user_asra,
+    'joshua': user_joshua,
+    'sartaz': user_sartaz,
+    'borja': user_borja,
+
+}
